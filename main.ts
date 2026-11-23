@@ -70,8 +70,13 @@ import { dirname, join } from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = __dirname;
 const SNAP_PATH = join(ROOT, "data", "snapshot.json");
-const OUT_DIR = join(ROOT, "out");
-const DASH_DIR = join(ROOT, "dashboard");
+// The grader runs with the repo mounted read-only at /bot and gives a
+// writable output dir in MAKEFUN_OUTPUT_DIR (/output). Writing board /
+// dossier / dashboard next to the code works locally but throws EROFS
+// there and the run exits 1, so honour the env dir when it is set.
+const GRADER_OUT = process.env.MAKEFUN_OUTPUT_DIR;
+const OUT_DIR = GRADER_OUT ? GRADER_OUT : join(ROOT, "out");
+const DASH_DIR = GRADER_OUT ? GRADER_OUT : join(ROOT, "dashboard");
 
 // ---------------------------------------------------------------- types
 interface Peer {
